@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f7f3" />
+    <title>Drift — an idea space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="library-view" class="view library-view" aria-label="Pad library">
+        <header class="topbar library-topbar">
+          <div class="brand-lockup">
+            <a class="brand" href="#" data-action="home" aria-label="Drift home">drift<span class="brand-dot">.</span></a>
+            <span class="brand-note">an idea space</span>
+          </div>
+          <button id="new-pad-button" class="button button-dark" type="button"><span class="button-plus">+</span> New pad</button>
+        </header>
+
+        <div class="library-content">
+          <div class="library-controls">
+            <label class="search-field" for="search-input">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input id="search-input" type="search" placeholder="Search your pads" autocomplete="off" />
+              <span class="search-shortcut">⌘ K</span>
+            </label>
+            <div class="library-count"><span class="summary-count" id="pad-count">0</span><span class="summary-label">saved pads</span></div>
+          </div>
+
+          <div id="pad-grid" class="pad-grid" aria-live="polite"></div>
+          <div id="empty-library" class="empty-library">
+            <div class="empty-orbit" aria-hidden="true"><span>✦</span></div>
+            <p class="empty-title">Your wall is waiting.</p>
+            <p class="empty-copy">Start with a thought, a question,<br />or something you don't want to lose.</p>
+            <button class="text-button" type="button" data-action="new-pad">Make your first pad <span>↗</span></button>
+          </div>
+          <div id="no-results" class="empty-library no-results" hidden>
+            <p class="empty-title">Nothing surfaced yet.</p>
+            <p class="empty-copy">Try a different word or make a new pad.</p>
+          </div>
+        </div>
+        <footer class="library-footer"><span>made for wandering minds</span><span>01 / 01</span></footer>
+      </section>
+
+      <section id="editor-view" class="view editor-view" hidden aria-labelledby="editor-title">
+        <header class="topbar editor-topbar">
+          <button class="back-button" type="button" data-action="back-to-library" aria-label="Back to library"><span>←</span><span class="back-label">All pads</span></button>
+          <div class="editor-heading">
+            <span id="editor-kicker" class="editor-kicker">Now thinking in</span>
+            <input id="editor-title" class="editor-title-input" type="text" maxlength="80" placeholder="Untitled idea" aria-label="Pad name" />
+          </div>
+          <button id="save-pad-button" class="button button-save" type="button"><span class="save-icon">✓</span> Save pad</button>
+        </header>
+
+        <div class="editor-workspace">
+          <div class="workspace-main">
+            <div class="canvas-stage" id="canvas-stage">
+              <canvas id="drawing-canvas" aria-label="Idea pad drawing canvas"></canvas>
+              <div id="text-layer" class="text-layer"></div>
+              <div id="image-layer" class="image-layer"></div>
+              <div class="canvas-watermark" aria-hidden="true">let it wander</div>
+            </div>
+            <section class="sticky-shelf" aria-label="Sticky notes">
+              <div class="shelf-heading"><span>Sticky notes</span><span class="shelf-hint">ideas outside the lines</span></div>
+              <div id="sticky-layer" class="sticky-layer"></div>
+            </section>
+          </div>
+
+          <aside class="tool-dock" aria-label="Pad tools">
+            <div class="dock-label">Tools</div>
+            <button class="tool-button active" type="button" data-tool="pen" title="Pen"><span class="tool-glyph pen-glyph"></span><span>Pen</span></button>
+            <button class="tool-button" type="button" data-tool="eraser" title="Eraser"><span class="tool-glyph eraser-glyph"></span><span>Eraser</span></button>
+            <button class="tool-button" type="button" data-tool="highlighter" title="Highlighter"><span class="tool-glyph highlighter-glyph"></span><span>Highlight</span></button>
+            <button class="tool-button" type="button" data-tool="text" title="Add text"><span class="tool-glyph text-glyph">T</span><span>Text</span></button>
+            <button class="tool-button" type="button" data-tool="sticky" title="Add sticky note"><span class="tool-glyph sticky-glyph"></span><span>Sticky</span></button>
+            <button class="tool-button" type="button" data-tool="image" title="Add image"><span class="tool-glyph image-glyph">▧</span><span>Image</span></button>
+            <label class="color-picker" for="color-input"><span>Ink</span><input id="color-input" type="color" value="#415343" aria-label="Choose ink color" /></label>
+            <div class="dock-divider"></div>
+            <button class="tool-button subtle-tool" type="button" data-action="clear-canvas" title="Clear drawings"><span class="tool-glyph clear-glyph">⌫</span><span>Clear</span></button>
+            <input id="image-input" type="file" accept="image/*" hidden />
+          </aside>
+        </div>
+        <div class="editor-footer"><span class="status-dot"></span><span id="editor-status">Unsaved changes</span><span class="footer-separator">·</span><span>Everything starts somewhere</span></div>
+      </section>
+    </main>
+
+    <div id="name-modal" class="modal-backdrop" hidden>
+      <form id="name-form" class="name-modal" novalidate>
+        <button class="modal-close" type="button" data-action="close-name-modal" aria-label="Close">×</button>
+        <p class="eyebrow">A fresh page</p>
+        <h2>What shall we<br /><em>call this one?</em></h2>
+        <p class="modal-copy">Give it a name now, or leave it blank and let the idea lead.</p>
+        <label class="modal-label" for="new-pad-name">Pad name <span>optional</span></label>
+        <input id="new-pad-name" class="modal-input" type="text" maxlength="80" placeholder="e.g. tiny studio, big feeling" autocomplete="off" />
+        <div class="modal-actions"><button class="button button-quiet" type="button" data-action="close-name-modal">Cancel</button><button class="button button-dark" type="submit">Open pad <span>↗</span></button></div>
+      </form>
+    </div>
+
+    <div id="confirm-modal" class="modal-backdrop" hidden>
+      <div class="confirm-modal">
+        <button class="modal-close" type="button" data-action="close-confirm-modal" aria-label="Close">×</button>
+        <p class="eyebrow">A little housekeeping</p>
+        <h2 id="folder-modal-title">Make a<br /><em>folder?</em></h2>
+        <p id="folder-modal-copy" class="modal-copy">Create a big paper folder with one sticky note for each scratchpad. The original pads will stay right where they are.</p>
+        <div class="merge-preview"><span id="merge-first-label">First pad</span><span>+</span><span id="merge-second-label">Second pad</span></div>
+        <div class="modal-actions"><button class="button button-quiet" type="button" data-action="close-confirm-modal">Keep separate</button><button id="confirm-merge-button" class="button button-dark" type="button">Create folder <span>↗</span></button></div>
+      </div>
+    </div>
+
+    <template id="pad-card-template">
+      <article class="pad-card">
+        <div class="card-topline"><span class="card-index"></span><button class="card-menu" type="button" aria-label="Pad actions">•••</button></div>
+          <a class="card-open" href="#">
+          <span class="card-tape"></span>
+          <span class="card-title"></span>
+          <img class="card-sketch-preview" alt="" hidden />
+          <span class="card-preview"></span>
+          <span class="card-meta"></span>
+          </a>
+        <div class="card-actions" hidden>
+          <button type="button" data-card-action="rename">Rename</button>
+          <button type="button" data-card-action="merge">Make folder with…</button>
+          <button type="button" data-card-action="delete" class="danger-action">Delete</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js?v=20260918"></script>
+  </body>
+</html>
